@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface ICanDropItem
 {
-    public LootBag lootBag {get; set;}
+    public LootBag lootBag {get;}
     public void DropLoot();
 }

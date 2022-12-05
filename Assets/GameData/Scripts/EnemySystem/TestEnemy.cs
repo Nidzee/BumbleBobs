@@ -6,17 +6,16 @@ public class TestEnemy : AliveUnit, IEnemy, ICanDropItem
 {
     [SerializeField] EnemyType _enemyType;
     [SerializeField] LootBag _lootBag;
-    public LootBag lootBag { get; set;}
+    public LootBag lootBag { get => _lootBag; }
 
 
     // Init enemy data after spawn
     public void init()
     {
-        lootBag = _lootBag;
-        InitEnemyDataFromConfig();
+        InitEnemyStats();
     }
 
-    public void InitEnemyDataFromConfig()
+    public void InitEnemyStats()
     {
         // Get stats by enemy type
         EnemyStats stats = EnemyConfigManager.Instance.GetEnemyStats(_enemyType);
@@ -34,6 +33,7 @@ public class TestEnemy : AliveUnit, IEnemy, ICanDropItem
 
     void SetEnemyStats(EnemyStats stats)
     {
+        // TODO: set rest stats
         Health = stats.maxHealthPoints;
         Armour = stats.maxArmourPoints;
     }

@@ -1,5 +1,5 @@
 public interface IEnemy
 {
-    public void InitEnemyDataFromConfig();
+    public void InitEnemyStats();
     public void Attack();
 }

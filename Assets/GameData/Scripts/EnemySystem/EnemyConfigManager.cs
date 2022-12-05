@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class EnemyConfigManager : MonoBehaviour
 {
-    [SerializeField] List<EnemyConfig> _enemyConfigList = new List<EnemyConfig>();
-    Dictionary<EnemyType, EnemyStats>  _enemyTypeStats = new Dictionary<EnemyType, EnemyStats>();
+    // Class reference
     public static EnemyConfigManager Instance;
+
+    // For easy customization enemy stats by type in inspector
+    [SerializeField] List<EnemyConfig> _enemyConfigList = new List<EnemyConfig>();
+
+    // Cache for easy use    
+    Dictionary<EnemyType, EnemyStats>  _enemyTypeStats = new Dictionary<EnemyType, EnemyStats>();
 
 
 
