@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class EnemyConfig
+public class EnemyTypeStatsConfiguration
 {
     public EnemyType enemyType;
     public EnemyStats stats;

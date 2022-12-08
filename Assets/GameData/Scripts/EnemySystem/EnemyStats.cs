@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EnemyStats
 {
-    // TODO: Add data about additional damage from some weapon types
     public int maxHealthPoints;
     public int maxArmourPoints;
+    public float damagePoints;
     public float moveSpeed;
 }

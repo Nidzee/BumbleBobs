@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSaveData : MonoBehaviour
+public class PlayerSaveData
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    // GENERIC DATA
+    // GEL - amount
+    // HP - level and step
+    // ARMOUR - level and step
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
+    // WEAPON SYSTEM
+    // List of opened weapons
+    // For each elemnt of opened weapon - weapon data (level and step)
+
+
+    // ENEMY CARDS
+    // List of opened enemies
 }

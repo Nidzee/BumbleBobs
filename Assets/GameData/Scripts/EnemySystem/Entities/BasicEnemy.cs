@@ -2,15 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestEnemy : AliveUnit, IEnemy, ICanDropItem
+public class BasicEnemy : AliveUnit, IEnemy, ICanDropItem
 {
+    [SerializeField] EnemyCategory _enemyCategory;
     [SerializeField] EnemyType _enemyType;
+    [SerializeField] DamageType _damageType;
     [SerializeField] LootBag _lootBag;
+
+    public DamageType damageType { get => _damageType; }
     public LootBag lootBag { get => _lootBag; }
 
 
     // Init enemy data after spawn
-    public void init()
+    public void Init()
     {
         InitEnemyStats();
     }
@@ -18,14 +22,7 @@ public class TestEnemy : AliveUnit, IEnemy, ICanDropItem
     public void InitEnemyStats()
     {
         // Get stats by enemy type
-        EnemyStats stats = EnemyConfigManager.Instance.GetEnemyStats(_enemyType);
-        
-        // Check if stats is provided
-        if (stats == null)
-        {
-            Debug.LogException(new System.Exception("Missing stats for enemy initialization."));
-            return;
-        }
+        EnemyStats stats = EnemySystemManager.Instance.GetEnemyStats(_enemyType);
 
         // Set stats data for entity
         SetEnemyStats(stats);
@@ -33,7 +30,13 @@ public class TestEnemy : AliveUnit, IEnemy, ICanDropItem
 
     void SetEnemyStats(EnemyStats stats)
     {
-        // TODO: set rest stats
+        // Check if stats is provided
+        if (stats == null)
+        {
+            Debug.LogException(new System.Exception("Missing stats for enemy initialization."));
+            return;
+        }
+
         Health = stats.maxHealthPoints;
         Armour = stats.maxArmourPoints;
     }
