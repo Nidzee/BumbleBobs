@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class AssaultRifle : MonoBehaviour, IWeapon
 {
@@ -16,10 +17,11 @@ public class AssaultRifle : MonoBehaviour, IWeapon
 
     // Private data
     bool _isShootingContinuesly;
+    bool _isShootingOnce;
     float _currentCoolDown;
     
 
-    // Eevnt trigger [PRESS BUTTON] - shoot once
+    // Event trigger [PRESS BUTTON] - shoot once
     // Event trigger [JOYSTICK SHOOT POSITION] - start shooting continuesly
     // Event trigger [JOYSTICK NOT SHOOT POSITION] - end shooting continuesly
 
@@ -37,19 +39,32 @@ public class AssaultRifle : MonoBehaviour, IWeapon
         _damagePoints = 5f;
     }
 
-    public void StartShootingContinuesly()
+    public void StartShootingContinuesly() => _isShootingContinuesly = true;
+
+    public void StopShootingContinuesly() => _isShootingContinuesly = false;
+
+    public void ShootOnce()
     {
-        _isShootingContinuesly = true;
+        // Skip if we are shooting
+        if (_isShootingContinuesly)
+        {
+            Debug.LogException(new System.Exception("Trying to shoot once while shooting continuesly. Shooting aborted."));
+            return;
+        }
+
+
+        // If no cooldown - shoot
+        if (_currentCoolDown <= 0)
+        {
+            ShootOnceAction();
+        }
     }
 
-    public void StopShootingContinuesly()
-    {
-        _isShootingContinuesly = false;
-    }
+
 
     void Update()
     {
-        if (_isShootingContinuesly)
+        if (_isShootingContinuesly && !_isShootingOnce)
         {
             if (_currentCoolDown <= 0)
             {
@@ -66,21 +81,27 @@ public class AssaultRifle : MonoBehaviour, IWeapon
         }
     }
 
-    public void ShootOnce()
+    async void ShootOnceAction()
     {
-        // Skip if we are shooting
-        if (_isShootingContinuesly)
-        {
-            Debug.LogException(new System.Exception("Trying to shoot once while shooting continuesly. Shooting aborted."));
-            return;
-        }
+        _isShootingOnce = true;
 
-
-        // If no cooldown - shoot
-        if (_currentCoolDown <= 0)
+        for (int i = 0; i < 3; i++)
         {
             ShootTheGun();
             ResetCoolDown();
+            
+            await ShootOnceCoolDown();
+        }
+
+        _isShootingOnce = false;
+    }
+
+    async Task ShootOnceCoolDown()
+    {
+        while (_currentCoolDown > 0)
+        {
+            _currentCoolDown -= Time.deltaTime;
+            await Task.Yield();
         }
     }
 
@@ -89,8 +110,11 @@ public class AssaultRifle : MonoBehaviour, IWeapon
         _currentCoolDown = _coolDown;
     }
 
+
+
+
     public void ShootTheGun()
     {
-        // Create 3 projectiles and throw them
+        // Create projectile and throw it
     }
 }

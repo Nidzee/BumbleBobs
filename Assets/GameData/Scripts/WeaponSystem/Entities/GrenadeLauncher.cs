@@ -37,15 +37,9 @@ public class GrenadeLauncher : MonoBehaviour, IWeapon
         _damagePoints = 5f;
     }
 
-    public void StartShootingContinuesly()
-    {
-        _isShooting = true;
-    }
+    public void StartShootingContinuesly() => _isShooting = true;
 
-    public void StopShootingContinuesly()
-    {
-        _isShooting = false;
-    }
+    public void StopShootingContinuesly() => _isShooting = false;
 
     void Update()
     {

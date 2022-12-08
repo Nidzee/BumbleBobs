@@ -53,6 +53,7 @@ public class BasicEnemy : AliveUnit, IEnemy, ICanDropItem
 
     public override void Die()
     {
+        DropLoot();
     }
 
     public void DropLoot()
