@@ -13,6 +13,7 @@ public class AssaultRifle : MonoBehaviour, IWeapon
     // Config data
     float _coolDown;
     float _damagePoints;
+    float _emission;
 
 
     // Private data
@@ -29,14 +30,16 @@ public class AssaultRifle : MonoBehaviour, IWeapon
 
     public void Init()
     {
-        // Reset data
-        _isShootingContinuesly = false;
-        _currentCoolDown = 0;
+        SetGunStats();
+    }
 
+    public void SetGunStats()
+    {
+        WeaponStats stats = WeaponSystemManager.Instance.GetWeaponStats(_weaponType, 1, 1);
 
-        // Set from config
-        _coolDown = 1f;
-        _damagePoints = 5f;
+        _coolDown = stats.cooldown;
+        _damagePoints = stats.damagePoints;
+        _emission = stats.emission;
     }
 
     public void StartShootingContinuesly() => _isShootingContinuesly = true;

@@ -9,7 +9,7 @@ public class WeaponSystemManager : MonoBehaviour
 
     // Data customization in inspector
     [SerializeField] List<WeaponTypeConfiguration> _weaponDataConfiguration;
-    Dictionary<WeaponType, WeaponTypeGameData> _weaponTypeDataCache = new Dictionary<WeaponType, WeaponTypeGameData>();
+    Dictionary<WeaponType, WeaponTypeData> _weaponTypeDataCache = new Dictionary<WeaponType, WeaponTypeData>();
 
 
 
@@ -30,10 +30,8 @@ public class WeaponSystemManager : MonoBehaviour
         }
 
 
-        // Clear the cache
-        _weaponTypeDataCache = new Dictionary<WeaponType, WeaponTypeGameData>();
+        _weaponTypeDataCache = new Dictionary<WeaponType, WeaponTypeData>();
 
-        // Build cache for easy use
         foreach (var config in _weaponDataConfiguration)
         {
             if (!config.IsConfigValid())
@@ -42,10 +40,29 @@ public class WeaponSystemManager : MonoBehaviour
                 continue;
             }
 
-            WeaponTypeGameData data = new WeaponTypeGameData(config.weaponType, config.dataConfiguration);
-
-            _weaponTypeDataCache[config.weaponType] = data;
+            config.BuildCache();
+            _weaponTypeDataCache[config.weaponType] = config.weaponTypeConfiguration;
         }
+    }
+
+    public WeaponStats GetWeaponStats(WeaponType type, int level, int step)
+    {
+        if (!_weaponTypeDataCache.ContainsKey(type))
+        {
+            Debug.LogException(new System.Exception("No data-type in cache."));
+            return null;
+        }
+
+        WeaponTypeData weaponData = _weaponTypeDataCache[type];
+        WeaponStats stats = weaponData.GetWeaponStats(level, step);
+
+        if (stats == null)
+        {
+            Debug.LogException(new System.Exception("No stats by level and step in cache."));
+            return null;
+        }
+
+        return stats;
     }
 }
 

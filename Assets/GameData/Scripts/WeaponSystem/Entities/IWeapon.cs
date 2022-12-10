@@ -6,4 +6,5 @@ public interface IWeapon
 {
     public WeaponType weaponType {get;}
     public void ShootTheGun();
+    public void SetGunStats();
 }

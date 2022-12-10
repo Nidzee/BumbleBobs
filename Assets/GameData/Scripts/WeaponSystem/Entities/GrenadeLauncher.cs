@@ -12,6 +12,7 @@ public class GrenadeLauncher : MonoBehaviour, IWeapon
     // Config
     float _coolDown;
     float _damagePoints;
+    float _emission;
 
 
     // Private data
@@ -19,7 +20,7 @@ public class GrenadeLauncher : MonoBehaviour, IWeapon
     float _currentCoolDown;
     
 
-    // Eevnt trigger [PRESS BUTTON] - shoot once
+    // Event trigger [PRESS BUTTON] - shoot once
     // Event trigger [JOYSTICK SHOOT POSITION] - start shooting continuesly
     // Event trigger [JOYSTICK NOT SHOOT POSITION] - end shooting continuesly
 
@@ -27,14 +28,16 @@ public class GrenadeLauncher : MonoBehaviour, IWeapon
 
     public void Init()
     {
-        // Reset data
-        _isShooting = false;
-        _currentCoolDown = 0;
+        SetGunStats();
+    }
 
+    public void SetGunStats()
+    {
+        WeaponStats stats = WeaponSystemManager.Instance.GetWeaponStats(_weaponType, 1, 1);
 
-        // Set from config
-        _coolDown = 1f;
-        _damagePoints = 5f;
+        _coolDown = stats.cooldown;
+        _damagePoints = stats.damagePoints;
+        _emission = stats.emission;
     }
 
     public void StartShootingContinuesly() => _isShooting = true;

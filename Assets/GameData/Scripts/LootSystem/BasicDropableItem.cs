@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent (typeof(Rigidbody), typeof(SphereCollider))]
 public class BasicDropableItem : MonoBehaviour
 {
-    [SerializeField] DropItemConfig.DropItemType _itemType;
+    [SerializeField] DropItemType _itemType;
 
 
     void Start()
@@ -17,7 +17,7 @@ public class BasicDropableItem : MonoBehaviour
         // Loop rotation forever
     }
 
-    public DropItemConfig.DropItemType GetDropItemType()
+    public DropItemType GetDropItemType()
     {
         return _itemType;
     }

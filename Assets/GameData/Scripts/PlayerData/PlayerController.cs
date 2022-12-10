@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] Transform _playerModelContainer;
 
+    private int _gelAmount;
+
+
 
     public void FixedUpdate()
     {
@@ -22,12 +25,54 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
+    // Collision logic
     public void OnTriggerEnter(Collider col)
     {
         if (col.tag == TagConstraintsConfig.COLLECTIBLE_ITEM_TAG)
         {
             BasicDropableItem itemData = col.gameObject.GetComponent<BasicDropableItem>();
             Debug.Log("COLLECTED: " + itemData.GetDropItemType());
+
+            switch (itemData.GetDropItemType())
+            {
+                case DropItemType.Gel1:
+                break;
+                case DropItemType.Gel2:
+                break;
+                case DropItemType.Gel3:
+                break;
+                case DropItemType.Gel4:
+                break;
+                
+
+                case DropItemType.Crystal1:
+                break;
+                case DropItemType.Crystal2:
+                break;
+                case DropItemType.Crystal3:
+                break;
+                case DropItemType.Crystal4:
+                break;
+                
+                
+                case DropItemType.ArmourPack1:
+                break;
+                case DropItemType.ArmourPack2:
+                break;
+                case DropItemType.ArmourPack3:
+                break;
+                
+
+                case DropItemType.HealthPack1:
+                break;
+                case DropItemType.HealthPack2:
+                break;
+                case DropItemType.HealthPack3:
+                break;
+            }
+
             Destroy(col.gameObject);
         }
     }

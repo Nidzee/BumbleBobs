@@ -605,7 +605,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &712033541
 BoxCollider:
@@ -683,6 +683,56 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &765769434
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 765769435}
+  - component: {fileID: 765769436}
+  m_Layer: 0
+  m_Name: DropableItemSystemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &765769435
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765769434}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1063014240}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &765769436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765769434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f58048a0f077ca140a81754749032c69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dropItemValueConfig:
+  - itemType: 9
+    value: 25
+  - itemType: 12
+    value: 25
+  - itemType: 13
+    value: 30
 --- !u!1 &785060660
 GameObject:
   m_ObjectHideFlags: 0
@@ -999,6 +1049,7 @@ Transform:
   - {fileID: 321976382}
   - {fileID: 1213352700}
   - {fileID: 269732170}
+  - {fileID: 765769435}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1269,38 +1320,77 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponDataConfiguration:
   - weaponType: 1
-    dataConfiguration:
-    - levelNumber: 1
-      levelProgressSteps: 10
-      valueProgressionAmount: 5
-    - levelNumber: 2
-      levelProgressSteps: 7
-      valueProgressionAmount: 5
-    - levelNumber: 3
-      levelProgressSteps: 15
-      valueProgressionAmount: 5
+    weaponTypeConfiguration:
+      weaponLevelConfiguration:
+      - levelNumber: 1
+        levelStepsConfiguration:
+        - damagePoints: 5
+          emission: 3
+          cooldown: 1
+        - damagePoints: 6
+          emission: 3
+          cooldown: 1
+        - damagePoints: 7
+          emission: 3
+          cooldown: 1
+      - levelNumber: 2
+        levelStepsConfiguration:
+        - damagePoints: 8
+          emission: 3
+          cooldown: 1
+        - damagePoints: 9
+          emission: 3
+          cooldown: 1
+        - damagePoints: 10
+          emission: 3
+          cooldown: 1
+      - levelNumber: 3
+        levelStepsConfiguration:
+        - damagePoints: 11
+          emission: 3
+          cooldown: 0.9
+        - damagePoints: 12
+          emission: 3
+          cooldown: 0.9
+        - damagePoints: 13
+          emission: 3
+          cooldown: 0.9
   - weaponType: 2
-    dataConfiguration:
-    - levelNumber: 1
-      levelProgressSteps: 5
-      valueProgressionAmount: 5
-    - levelNumber: 2
-      levelProgressSteps: 9
-      valueProgressionAmount: 5
-    - levelNumber: 3
-      levelProgressSteps: 13
-      valueProgressionAmount: 5
-  - weaponType: 3
-    dataConfiguration:
-    - levelNumber: 1
-      levelProgressSteps: 5
-      valueProgressionAmount: 5
-    - levelNumber: 2
-      levelProgressSteps: 9
-      valueProgressionAmount: 5
-    - levelNumber: 3
-      levelProgressSteps: 13
-      valueProgressionAmount: 5
+    weaponTypeConfiguration:
+      weaponLevelConfiguration:
+      - levelNumber: 1
+        levelStepsConfiguration:
+        - damagePoints: 5
+          emission: 3
+          cooldown: 1
+        - damagePoints: 6
+          emission: 3
+          cooldown: 1
+        - damagePoints: 7
+          emission: 3
+          cooldown: 1
+      - levelNumber: 2
+        levelStepsConfiguration:
+        - damagePoints: 8
+          emission: 3
+          cooldown: 1
+        - damagePoints: 9
+          emission: 3
+          cooldown: 1
+        - damagePoints: 10
+          emission: 3
+          cooldown: 1
+      - levelNumber: 3
+        levelStepsConfiguration:
+        - damagePoints: 11
+          emission: 3
+          cooldown: 0.9
+        - damagePoints: 12
+          emission: 3
+          cooldown: 0.9
+        - damagePoints: 13
+          emission: 3
+          cooldown: 0.9
 --- !u!1 &1236086012
 GameObject:
   m_ObjectHideFlags: 0
