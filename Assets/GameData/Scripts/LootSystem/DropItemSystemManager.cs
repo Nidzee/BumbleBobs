@@ -5,8 +5,7 @@ using UnityEngine;
 public class DropItemSystemManager : MonoBehaviour
 {
     [SerializeField] List<DropItemValueConfig> _dropItemValueConfig;
-
-    
+    Dictionary<DropItemType, float> _dropItemTypeValueCache = new Dictionary<DropItemType, float>(); 
 }
 
 [System.Serializable]
