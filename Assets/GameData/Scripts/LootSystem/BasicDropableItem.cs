@@ -12,11 +12,6 @@ public class BasicDropableItem : MonoBehaviour
         this.tag = TagConstraintsConfig.COLLECTIBLE_ITEM_TAG;
     }
 
-    void Update()
-    {
-        // Loop rotation forever
-    }
-
     public DropItemType GetDropItemType()
     {
         return _itemType;

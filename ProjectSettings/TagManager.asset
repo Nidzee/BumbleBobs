@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CollectibleItem
   - DestructibleUnit
+  - Obstacle
   layers:
   - Default
   - TransparentFX

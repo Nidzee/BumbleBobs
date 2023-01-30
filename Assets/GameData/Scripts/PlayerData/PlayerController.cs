@@ -7,11 +7,75 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _moveSpeed;
 
     [SerializeField] Transform _playerModelContainer;
-
-    private int _gelAmount;
-
+    [SerializeField] Weapon _weapon;
 
 
+
+
+    public void Start()
+    {
+        _weapon.SetGunStats();
+    }
+
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            _weapon.StartShootingContinuesly();
+        } 
+        
+        else if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _weapon.StopShootingContinuesly();
+        }
+    }
+
+
+
+
+
+
+
+
+
+    // Collision logic
+    public void OnTriggerEnter(Collider col)
+    {
+        if (col.tag == TagConstraintsConfig.COLLECTIBLE_ITEM_TAG)
+        {
+            BasicDropableItem itemData = col.gameObject.GetComponent<BasicDropableItem>();
+
+            switch (itemData.GetDropItemType())
+            {
+                case DropItemType.Gel:
+                break;
+                
+                case DropItemType.Crystal:
+                break;
+                
+                case DropItemType.HealthPack:
+                break;
+                
+                case DropItemType.ArmourPack:
+                break;
+            }
+
+            Destroy(col.gameObject);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // Movement -> redo with new input system and new joystick
     public void FixedUpdate()
     {
         Vector3 joysticInput = _joyStickController.joysticMovementVector;
@@ -22,58 +86,6 @@ public class PlayerController : MonoBehaviour
         if (newVelocityVector.x != 0 || newVelocityVector.z != 0)
         {
             _playerModelContainer.transform.rotation = Quaternion.LookRotation(newVelocityVector);
-        }
-    }
-
-
-
-    // Collision logic
-    public void OnTriggerEnter(Collider col)
-    {
-        if (col.tag == TagConstraintsConfig.COLLECTIBLE_ITEM_TAG)
-        {
-            BasicDropableItem itemData = col.gameObject.GetComponent<BasicDropableItem>();
-            Debug.Log("COLLECTED: " + itemData.GetDropItemType());
-
-            switch (itemData.GetDropItemType())
-            {
-                case DropItemType.Gel1:
-                break;
-                case DropItemType.Gel2:
-                break;
-                case DropItemType.Gel3:
-                break;
-                case DropItemType.Gel4:
-                break;
-                
-
-                case DropItemType.Crystal1:
-                break;
-                case DropItemType.Crystal2:
-                break;
-                case DropItemType.Crystal3:
-                break;
-                case DropItemType.Crystal4:
-                break;
-                
-                
-                case DropItemType.ArmourPack1:
-                break;
-                case DropItemType.ArmourPack2:
-                break;
-                case DropItemType.ArmourPack3:
-                break;
-                
-
-                case DropItemType.HealthPack1:
-                break;
-                case DropItemType.HealthPack2:
-                break;
-                case DropItemType.HealthPack3:
-                break;
-            }
-
-            Destroy(col.gameObject);
         }
     }
 }

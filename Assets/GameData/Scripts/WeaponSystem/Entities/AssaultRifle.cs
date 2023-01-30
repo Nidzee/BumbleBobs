@@ -1,73 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.Threading.Tasks;
 
-public class AssaultRifle : MonoBehaviour, IWeapon
+public class AssaultRifle : Weapon
 {
     [SerializeField] WeaponType _weaponType;
     [SerializeField] GameObject _bulletPrefab;
+    [SerializeField] Transform _bulletSpawnPoint;
 
-    public WeaponType weaponType => _weaponType;
+    public override WeaponType weaponType => _weaponType;
 
     // Config data
     float _coolDown;
     float _damagePoints;
     float _emission;
 
-
     // Private data
     bool _isShootingContinuesly;
-    bool _isShootingOnce;
     float _currentCoolDown;
     
 
-    // Event trigger [PRESS BUTTON] - shoot once
-    // Event trigger [JOYSTICK SHOOT POSITION] - start shooting continuesly
-    // Event trigger [JOYSTICK NOT SHOOT POSITION] - end shooting continuesly
 
-
-
-    public void Init()
+    public override void SetGunStats()
     {
-        SetGunStats();
+        _coolDown = 0.15f;
+        _damagePoints = 5;
+        _emission = 0.1f;
     }
 
-    public void SetGunStats()
-    {
-        WeaponStats stats = WeaponSystemManager.Instance.GetWeaponStats(_weaponType, 1, 1);
+    public override void StartShootingContinuesly() => _isShootingContinuesly = true;
 
-        _coolDown = stats.cooldown;
-        _damagePoints = stats.damagePoints;
-        _emission = stats.emission;
-    }
-
-    public void StartShootingContinuesly() => _isShootingContinuesly = true;
-
-    public void StopShootingContinuesly() => _isShootingContinuesly = false;
-
-    public void ShootOnce()
-    {
-        // Skip if we are shooting
-        if (_isShootingContinuesly)
-        {
-            Debug.LogException(new System.Exception("Trying to shoot once while shooting continuesly. Shooting aborted."));
-            return;
-        }
-
-
-        // If no cooldown - shoot
-        if (_currentCoolDown <= 0)
-        {
-            ShootOnceAction();
-        }
-    }
+    public override void StopShootingContinuesly() => _isShootingContinuesly = false;
 
 
 
     void Update()
     {
-        if (_isShootingContinuesly && !_isShootingOnce)
+        UpdateCoolDown();
+
+        // Try to shoot
+        if (_isShootingContinuesly)
         {
             if (_currentCoolDown <= 0)
             {
@@ -75,36 +45,13 @@ public class AssaultRifle : MonoBehaviour, IWeapon
                 ResetCoolDown();
             }
         }
+    }
 
-
-
+    void UpdateCoolDown()
+    {
         if (_currentCoolDown > 0)
         {
             _currentCoolDown -= Time.deltaTime;
-        }
-    }
-
-    async void ShootOnceAction()
-    {
-        _isShootingOnce = true;
-
-        for (int i = 0; i < 3; i++)
-        {
-            ShootTheGun();
-            ResetCoolDown();
-            
-            await ShootOnceCoolDown();
-        }
-
-        _isShootingOnce = false;
-    }
-
-    async Task ShootOnceCoolDown()
-    {
-        while (_currentCoolDown > 0)
-        {
-            _currentCoolDown -= Time.deltaTime;
-            await Task.Yield();
         }
     }
 
@@ -113,11 +60,9 @@ public class AssaultRifle : MonoBehaviour, IWeapon
         _currentCoolDown = _coolDown;
     }
 
-
-
-
-    public void ShootTheGun()
+    public override void ShootTheGun()
     {
-        // Create projectile and throw it
+        var bullet = Instantiate(_bulletPrefab, _bulletSpawnPoint.position, _bulletSpawnPoint.rotation);
+        bullet.GetComponent<Bullet>().LaunchBullet(_emission);
     }
 }

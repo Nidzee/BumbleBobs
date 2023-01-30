@@ -1,16 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
+
+// Class holds:
+// WEAPON TYPE
+// WEAPON DATA
 
 [System.Serializable]
 public class WeaponTypeConfiguration 
 {
     public WeaponType weaponType;
-    public WeaponTypeData weaponTypeConfiguration;
+    public WeaponGameData weaponGameData;
  
     public bool IsConfigValid()
     {
-        if (weaponType != WeaponType.None && weaponTypeConfiguration.IsConfigValid())
+        if (weaponGameData.IsConfigValid())
         {
             return true;
         }
@@ -20,14 +25,19 @@ public class WeaponTypeConfiguration
 
     public void BuildCache()
     {
-        weaponTypeConfiguration.BuildCache();
+        weaponGameData.BuildCache();
     }
 }
 
 
 
+
+
+// Class holds:
+// COLLECTION OF LEVELS FOR WEAPON
+
 [System.Serializable]
-public class WeaponTypeData
+public class WeaponGameData
 {
     public List<LevelAndStepsConfiguration> weaponLevelConfiguration;
     Dictionary<int, LevelAndStepsConfiguration> _levelStatsDictionary = new Dictionary<int, LevelAndStepsConfiguration>();
@@ -126,14 +136,4 @@ public class LevelAndStepsConfiguration
         
         return _stepStatsData[stepNumber];
     }
-}
-
-
-
-[System.Serializable]
-public class WeaponStats
-{
-    public float damagePoints;
-    public float emission;   
-    public float cooldown;
 }

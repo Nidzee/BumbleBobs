@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,6 +46,11 @@ public class LootBag : MonoBehaviour
 
     void SpawnLoot(List<BasicDropableItem> lootToSpawn)
     {
-        // Spawn gameobjects from list
+        foreach (var item in lootToSpawn)
+        {
+            GameObject lootObject = Instantiate(item.gameObject, transform.position, Quaternion.identity);
+            Vector3 randomDirection = new Vector3(Random.Range(-1, 1), 1f, Random.Range(-1, 1));
+            lootObject.GetComponent<Rigidbody>().AddForce(randomDirection.normalized * 3, ForceMode.Impulse);
+        }
     }
 }

@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 [System.Serializable]
 public class EnemyTypeStatsConfiguration
 {
@@ -10,7 +6,7 @@ public class EnemyTypeStatsConfiguration
 
     public bool IsConfigValid()
     {
-        if (enemyType != EnemyType.None && stats != null)
+        if (stats != null)
         {
             return true;
         }

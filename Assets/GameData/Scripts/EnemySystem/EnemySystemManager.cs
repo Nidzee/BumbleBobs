@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +12,9 @@ public class EnemySystemManager : MonoBehaviour
 
 
 
-    void Start()
+    void Awake()
     {
         Instance = this;
-
         BuildEnemyTypeStatsCache();
     }
 
@@ -28,6 +26,7 @@ public class EnemySystemManager : MonoBehaviour
             Debug.LogException(new System.Exception("EnemyConfigManager. No data provided: _enemyTypeStatsList."));
             return;
         }
+
 
 
         // Clear the cache
@@ -50,7 +49,6 @@ public class EnemySystemManager : MonoBehaviour
     {
         if (!_enemyTypeStatsCache.ContainsKey(type))
         {
-            // TODO: return default value
             Debug.LogError("Error! Missing enemy-stats data for type: " + type);
             return null;
         }
@@ -61,18 +59,12 @@ public class EnemySystemManager : MonoBehaviour
 
 public enum EnemyCategory
 {
-    None = 0,
     Category1 = 1,
-    Category2 = 2,
-    Category3 = 3,
 }
 
 public enum EnemyType
 {
-    None = 0,
     Type1 = 1,
-    Type2 = 2,
-    Type3 = 3,
 }
 
 public enum DamageType

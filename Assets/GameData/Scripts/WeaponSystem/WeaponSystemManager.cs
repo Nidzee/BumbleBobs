@@ -8,8 +8,8 @@ public class WeaponSystemManager : MonoBehaviour
     public static WeaponSystemManager Instance;
 
     // Data customization in inspector
-    [SerializeField] List<WeaponTypeConfiguration> _weaponDataConfiguration;
-    Dictionary<WeaponType, WeaponTypeData> _weaponTypeDataCache = new Dictionary<WeaponType, WeaponTypeData>();
+    [SerializeField] List<WeaponTypeConfiguration> _weaponGameDataCollection;
+    Dictionary<WeaponType, WeaponGameData> _weaponTypeDataCache = new Dictionary<WeaponType, WeaponGameData>();
 
 
 
@@ -23,16 +23,21 @@ public class WeaponSystemManager : MonoBehaviour
     void BuildWeaponTypeDataCache()
     {
         // Skip if no data provided
-        if (_weaponDataConfiguration == null || _weaponDataConfiguration?.Count <= 0)
+        if (_weaponGameDataCollection == null || _weaponGameDataCollection?.Count <= 0)
         {
             Debug.LogException(new System.Exception("WeaponSystemManager. No data provided: _weaponDataConfiguration."));
             return;
         }
 
 
-        _weaponTypeDataCache = new Dictionary<WeaponType, WeaponTypeData>();
 
-        foreach (var config in _weaponDataConfiguration)
+
+
+        // Clear the cache
+        _weaponTypeDataCache = new Dictionary<WeaponType, WeaponGameData>();
+
+        // Build the cahce
+        foreach (var config in _weaponGameDataCollection)
         {
             if (!config.IsConfigValid())
             {
@@ -41,9 +46,16 @@ public class WeaponSystemManager : MonoBehaviour
             }
 
             config.BuildCache();
-            _weaponTypeDataCache[config.weaponType] = config.weaponTypeConfiguration;
+            _weaponTypeDataCache[config.weaponType] = config.weaponGameData;
         }
     }
+
+
+
+
+
+
+
 
     public WeaponStats GetWeaponStats(WeaponType type, int level, int step)
     {
@@ -53,7 +65,7 @@ public class WeaponSystemManager : MonoBehaviour
             return null;
         }
 
-        WeaponTypeData weaponData = _weaponTypeDataCache[type];
+        WeaponGameData weaponData = _weaponTypeDataCache[type];
         WeaponStats stats = weaponData.GetWeaponStats(level, step);
 
         if (stats == null)
@@ -66,10 +78,9 @@ public class WeaponSystemManager : MonoBehaviour
     }
 }
 
+
+
 public enum WeaponType
 {
-    None = 0,
     AssaultRifle = 1,
-    GrenadeLauncher = 2,
-    LaserGun = 3,
 }
