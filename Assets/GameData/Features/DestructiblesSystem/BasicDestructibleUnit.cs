@@ -17,7 +17,7 @@ public class BasicDestructibleUnit : AliveUnit, ICanDropItem
     public void Start()
     {
         // Init health data from stats
-        DestructibleUnitStats stats = DestructibleUnitsSystemManager.Instance.GetEnemyStats(_unitType);
+        DestructibleUnitStats stats = DestructibleUnitsSystemManager.Instance.GetDestructibleUnitStats(_unitType);
         Health = stats.maxHealthPoints;
     }
 

@@ -10,7 +10,7 @@ TagManager:
   - Enemy
   - Obstacle
   - Environment
-  - AgressiveEnvironment
+  - EffectZone
   layers:
   - Default
   - TransparentFX

@@ -21,7 +21,7 @@ public class EnemySystemManager : MonoBehaviour
     public static EnemySystemManager Instance;
 
     // Data customization in inspector
-    [SerializeField] List<EnemyTypeStatsConfiguration> _enemyTypeStatsConfiguration = new List<EnemyTypeStatsConfiguration>();
+    [SerializeField] List<EnemyTypeStatsConfiguration> _enemyConfig = new List<EnemyTypeStatsConfiguration>();
     Dictionary<EnemyType, EnemyStats> _enemyTypeStatsCache = new Dictionary<EnemyType, EnemyStats>();
 
 
@@ -29,15 +29,15 @@ public class EnemySystemManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        BuildEnemyTypeStatsCache();
+        BuildEnemySystemCache();
     }
 
-    void BuildEnemyTypeStatsCache()
+    void BuildEnemySystemCache()
     {
         // Skip if no data provided
-        if (_enemyTypeStatsConfiguration == null || _enemyTypeStatsConfiguration?.Count <= 0)
+        if (_enemyConfig == null || _enemyConfig?.Count <= 0)
         {
-            Debug.LogException(new System.Exception("EnemyConfigManager. No data provided: _enemyTypeStatsList."));
+            Debug.LogError("[EnemyConfigManager] No data provided.");
             return;
         }
 
@@ -47,7 +47,7 @@ public class EnemySystemManager : MonoBehaviour
         _enemyTypeStatsCache = new Dictionary<EnemyType, EnemyStats>();
 
         // Build cache for easy use
-        foreach (var config in _enemyTypeStatsConfiguration)
+        foreach (var config in _enemyConfig)
         {
             if (!config.IsConfigValid())
             {
@@ -63,7 +63,7 @@ public class EnemySystemManager : MonoBehaviour
     {
         if (!_enemyTypeStatsCache.ContainsKey(type))
         {
-            Debug.LogError("Error! Missing enemy-stats data for type: " + type);
+            Debug.LogError("[EnemyConfigManager] Missing stats for type: " + type);
             return null;
         }
         

@@ -13,5 +13,5 @@ public static class TagConstraintsConfig
 
     public const string BULLET_TAG = "Bullet";
 
-    public const string AGRESSIVE_ENVIRONMENT_AREA_TAG = "AgressiveEnvironment";
+    public const string EFFECT_ZONE_TAG = "EffectZone";
 }

@@ -4,31 +4,21 @@ using UnityEngine.UI;
 using UnityEngine;
 
 
-[System.Serializable]
-public class AgressiveEnvironmentIconData
-{
-    public EffectType Type;
-    public Image Icon;
-}
-
-
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] JoyStickController _joyStickController;
+    [Header("Handlers")]
     [SerializeField] PlayerEffectsHandler _effectsHandler;
+    [SerializeField] PlayerItemCollectorHandler _itemCollectHandler;
+    
+    [Header("Weapon")]
     [SerializeField] Weapon _weapon;
 
-
-
+    [Space]
+    [SerializeField] JoyStickController _joyStickController;
     [SerializeField] Rigidbody _rb;
     [SerializeField] float _moveSpeed;
     [SerializeField] Transform _playerModelContainer;
 
-
-    [Header("Sounds")]
-    [SerializeField] AudioSource _audioSource;
-    [SerializeField] AudioClip _collectHealthSound;
-    [SerializeField] AudioClip _collectArmourSound;
 
 
 
@@ -36,19 +26,7 @@ public class PlayerController : MonoBehaviour
     {
         _weapon.SetGunStats();
         _effectsHandler.Reset();
-    }
-
-    public void Update()
-    {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            _weapon.StartShootingContinuesly();
-        } 
-        
-        else if (Input.GetKeyUp(KeyCode.Space))
-        {
-            _weapon.StopShootingContinuesly();
-        }
+        _itemCollectHandler.Reset();
     }
 
 
@@ -69,29 +47,20 @@ public class PlayerController : MonoBehaviour
     // Collision logic
     public void OnTriggerEnter(Collider col)
     {
+        // Collectible item logic
         if (col.tag == TagConstraintsConfig.COLLECTIBLE_ITEM_TAG)
         {
             BasicDropItem itemData = col.gameObject.GetComponent<BasicDropItem>();
-
-            switch (itemData.GetDropItemType())
+            if (itemData != null)
             {
-                case DropItemType.HealthPack:
-                _audioSource.clip = _collectHealthSound;
-                _audioSource.Play();
-                break;
-                
-                case DropItemType.ArmourPack:
-                _audioSource.clip = _collectArmourSound;
-                _audioSource.Play();
-                break;
+                _itemCollectHandler.CollectItem(itemData);
             }
-
-            Destroy(col.gameObject);
         }
     
-        if (col.tag == TagConstraintsConfig.AGRESSIVE_ENVIRONMENT_AREA_TAG)
+
+        // Effect zone logic
+        if (col.tag == TagConstraintsConfig.EFFECT_ZONE_TAG)
         {
-            // Apply effect on player
             BasicEffectZone environment = col.gameObject.GetComponent<BasicEffectZone>();
             if (environment != null)
             {
@@ -102,7 +71,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnTriggerExit(Collider col)
     {
-        if (col.tag == TagConstraintsConfig.AGRESSIVE_ENVIRONMENT_AREA_TAG)
+        if (col.tag == TagConstraintsConfig.EFFECT_ZONE_TAG)
         {
             BasicEffectZone environment = col.gameObject.GetComponent<BasicEffectZone>();
             if (environment != null)
@@ -143,6 +112,19 @@ public class PlayerController : MonoBehaviour
         if (newVelocityVector.x != 0 || newVelocityVector.z != 0)
         {
             _playerModelContainer.transform.rotation = Quaternion.LookRotation(newVelocityVector);
+        }
+    }
+
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            _weapon.StartShootingContinuesly();
+        } 
+        
+        else if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _weapon.StopShootingContinuesly();
         }
     }
 }

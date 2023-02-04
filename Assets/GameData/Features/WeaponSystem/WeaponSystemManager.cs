@@ -8,12 +8,12 @@ public class WeaponSystemManager : MonoBehaviour
     public static WeaponSystemManager Instance;
 
     // Data customization in inspector
-    [SerializeField] List<WeaponTypeConfiguration> _weaponGameDataCollection;
+    [SerializeField] List<WeaponTypeConfiguration> _weaponConfig;
     Dictionary<WeaponType, WeaponGameData> _weaponTypeDataCache = new Dictionary<WeaponType, WeaponGameData>();
 
 
 
-    void Start()
+    void Awake()
     {
         Instance = this;
 
@@ -23,9 +23,9 @@ public class WeaponSystemManager : MonoBehaviour
     void BuildWeaponTypeDataCache()
     {
         // Skip if no data provided
-        if (_weaponGameDataCollection == null || _weaponGameDataCollection?.Count <= 0)
+        if (_weaponConfig == null || _weaponConfig?.Count <= 0)
         {
-            Debug.LogException(new System.Exception("WeaponSystemManager. No data provided: _weaponDataConfiguration."));
+            Debug.LogError("[WeaponSystemManager] No data provided.");
             return;
         }
 
@@ -37,7 +37,7 @@ public class WeaponSystemManager : MonoBehaviour
         _weaponTypeDataCache = new Dictionary<WeaponType, WeaponGameData>();
 
         // Build the cahce
-        foreach (var config in _weaponGameDataCollection)
+        foreach (var config in _weaponConfig)
         {
             if (!config.IsConfigValid())
             {
@@ -70,7 +70,7 @@ public class WeaponSystemManager : MonoBehaviour
 
         if (stats == null)
         {
-            Debug.LogException(new System.Exception("No stats by level and step in cache."));
+            Debug.LogError("No stats by level and step in cache.");
             return null;
         }
 

@@ -7,47 +7,47 @@ public class DestructibleUnitsSystemManager : MonoBehaviour
     public static DestructibleUnitsSystemManager Instance;
 
     // Data customization in inspector
-    [SerializeField] List<DestructibleUnitTypeStatsConfiguration> _unitTypeStatsConfiguration = new List<DestructibleUnitTypeStatsConfiguration>();
-    Dictionary<DestructibleUnitType, DestructibleUnitStats> _unitTypeStatsCache = new Dictionary<DestructibleUnitType, DestructibleUnitStats>();
+    [SerializeField] List<DestructibleUnitTypeStatsConfiguration> _destructibleUnitConfig = new List<DestructibleUnitTypeStatsConfiguration>();
+    Dictionary<DestructibleUnitType, DestructibleUnitStats> _destructibleUnitTypeStatsCache = new Dictionary<DestructibleUnitType, DestructibleUnitStats>();
 
 
     public void Awake()
     {
         Instance = this;
-        BuildEnemyTypeStatsCache();
+        BuildDestructibleUnitsSystemCache();
     }
 
     
-    void BuildEnemyTypeStatsCache()
+    void BuildDestructibleUnitsSystemCache()
     {
         // Skip if no data provided
-        if (_unitTypeStatsConfiguration == null || _unitTypeStatsConfiguration?.Count <= 0)
+        if (_destructibleUnitConfig == null || _destructibleUnitConfig?.Count <= 0)
         {
-            Debug.LogException(new System.Exception("DestructibleUnitsSystemManager. No data provided: _unitTypeStatsConfiguration."));
+            Debug.LogError("[DestructibleUnitsSystemManager] No data provided.");
             return;
         }
 
 
 
         // Clear the cache
-        _unitTypeStatsCache = new Dictionary<DestructibleUnitType, DestructibleUnitStats>();
+        _destructibleUnitTypeStatsCache = new Dictionary<DestructibleUnitType, DestructibleUnitStats>();
 
         // Build cache for easy use
-        foreach (var config in _unitTypeStatsConfiguration)
+        foreach (var config in _destructibleUnitConfig)
         {
-            _unitTypeStatsCache[config.unitType] = config.stats;
+            _destructibleUnitTypeStatsCache[config.unitType] = config.stats;
         }
     }
 
-    public DestructibleUnitStats GetEnemyStats(DestructibleUnitType type)
+    public DestructibleUnitStats GetDestructibleUnitStats(DestructibleUnitType type)
     {
-        if (!_unitTypeStatsCache.ContainsKey(type))
+        if (!_destructibleUnitTypeStatsCache.ContainsKey(type))
         {
-            Debug.LogError("Error! Missing DestructibleUnitType-stats data for type: " + type);
+            Debug.LogError("[DestructibleUnitsSystemManager] Missing stats for type: " + type);
             return null;
         }
         
-        return _unitTypeStatsCache[type];
+        return _destructibleUnitTypeStatsCache[type];
     }
 }
 
