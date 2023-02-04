@@ -6,9 +6,9 @@ using System.Linq;
 
 
 [System.Serializable]
-public class AgressiveEnvironmentParticlesData
+public class EffectDisplayData
 {
-    public AgressiveEnvironmentType EnvironmnentType;
+    public EffectType EnvironmnentType;
     public GameObject ParticleObject;
     public Image Icon;
 }
@@ -16,16 +16,16 @@ public class AgressiveEnvironmentParticlesData
 
 public class PlayerEffectsHandler : MonoBehaviour
 {
-    [SerializeField] List<AgressiveEnvironmentParticlesData> _availableEffects;
+    [SerializeField] List<EffectDisplayData> _availableEffects;
     [SerializeField] PlayerController _player;
 
-    List<BasicAgresiveEnvironment> _effectsOnPlayer;
+    List<EffectData> _effectsOnPlayer;
 
 
     public void Reset()
     {
         // Clear list of current effects
-        _effectsOnPlayer = new List<BasicAgresiveEnvironment>();
+        _effectsOnPlayer = new List<EffectData>();
         
         // Deactivate all particles
         DeactivateAllParticles();
@@ -33,47 +33,63 @@ public class PlayerEffectsHandler : MonoBehaviour
 
 
 
-    public void RemoveEffect(BasicAgresiveEnvironment effectData)
-    {
-        var effetOnPlayerData = _effectsOnPlayer.FirstOrDefault(i => i.EnvironmnentType == effectData.EnvironmnentType);
-        
-        if (effetOnPlayerData != null)
-        {
-            Debug.Log("Remove effect: " + effetOnPlayerData.EnvironmnentType);
-            UpdateEffectParticle(effetOnPlayerData.EnvironmnentType, false);
-            _effectsOnPlayer.Remove(effetOnPlayerData);
-        }
-        else
-        {
-            Debug.Log("Trying to remove effect: " + effectData.EnvironmnentType + " which is not on player.");
-        }
-    }
 
-    public void ApplyEffect(BasicAgresiveEnvironment effectData)
+
+
+
+
+
+    public void ApplyEffect(EffectData effectData)
     {
         // Check if effect is already on player
-        var effectDataOnPlayer = _effectsOnPlayer.FirstOrDefault(i => i.EnvironmnentType == effectData.EnvironmnentType);
+        var effectDataOnPlayer = _effectsOnPlayer.FirstOrDefault(i => i.EffectType == effectData.EffectType);
         if (effectDataOnPlayer != null)
         {
-            // _effectsOnPlayer.Add(effectData); // if multiple objects intersects -> uncomment
-            Debug.Log("Effect: " + effectData.EnvironmnentType + " is already on player.");
+            Debug.Log("Effect: " + effectData.EffectType + " is already on player.");
             return;
         }
 
+
+        // Add efect to player effects container
         _effectsOnPlayer.Add(effectData);
 
         // Try to activate particles
-        UpdateEffectParticle(effectData.EnvironmnentType, true);
+        UpdateEffectParticle(effectData.EffectType, true);
 
         // Start apply damage logic
         ApplyEffectDamageLogic(effectData);
     }
 
-
-
-    bool IsEffectOnPlayer(AgressiveEnvironmentType type)
+    public void RemoveEffect(EffectData effectData)
     {
-        var effectOnPlayerData = _effectsOnPlayer.FirstOrDefault(i => i.EnvironmnentType == type);
+        var effetOnPlayerData = _effectsOnPlayer.FirstOrDefault(i => i.EffectType == effectData.EffectType);
+        
+        if (effetOnPlayerData != null)
+        {
+            Debug.Log("Remove effect: " + effetOnPlayerData.EffectType);
+            UpdateEffectParticle(effetOnPlayerData.EffectType, false);
+            _effectsOnPlayer.Remove(effetOnPlayerData);
+        }
+        else
+        {
+            Debug.Log("Trying to remove effect: " + effectData.EffectType + " which is not on player.");
+        }
+    }
+
+
+
+    async void ApplyEffectDamageLogic(EffectData effectData)
+    {
+        while(IsEffectOnPlayer(effectData.EffectType))
+        {
+            Debug.Log("ADD DAMAGE: " + effectData.EffectType + "   POINTS: " + effectData.EffectStats.DamagePoints);
+            await Task.Delay(effectData.EffectStats.DamageIntervas_Miliseconds);
+        }
+    }
+
+    bool IsEffectOnPlayer(EffectType type)
+    {
+        var effectOnPlayerData = _effectsOnPlayer.FirstOrDefault(i => i.EffectType == type);
         
         if (effectOnPlayerData != null)
         {
@@ -83,14 +99,9 @@ public class PlayerEffectsHandler : MonoBehaviour
         return false;
     }
 
-    async void ApplyEffectDamageLogic(BasicAgresiveEnvironment effectData)
-    {
-        while(IsEffectOnPlayer(effectData.EnvironmnentType))
-        {
-            Debug.Log("ADD DAMAGE: " + effectData.EnvironmnentType + "   POINTS: " + effectData.DamagePoints);
-            await Task.Delay(effectData.DamageInterval_Miliseconds);
-        }
-    }
+
+
+
 
 
 
@@ -99,7 +110,7 @@ public class PlayerEffectsHandler : MonoBehaviour
 
 
     // Effects particles logic
-    void UpdateEffectParticle(AgressiveEnvironmentType type, bool status)
+    void UpdateEffectParticle(EffectType type, bool status)
     {
         foreach (var data in _availableEffects)
         {

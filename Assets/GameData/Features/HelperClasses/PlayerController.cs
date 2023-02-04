@@ -7,7 +7,7 @@ using UnityEngine;
 [System.Serializable]
 public class AgressiveEnvironmentIconData
 {
-    public AgressiveEnvironmentType Type;
+    public EffectType Type;
     public Image Icon;
 }
 
@@ -92,10 +92,10 @@ public class PlayerController : MonoBehaviour
         if (col.tag == TagConstraintsConfig.AGRESSIVE_ENVIRONMENT_AREA_TAG)
         {
             // Apply effect on player
-            BasicAgresiveEnvironment environment = col.gameObject.GetComponent<BasicAgresiveEnvironment>();
+            BasicEffectZone environment = col.gameObject.GetComponent<BasicEffectZone>();
             if (environment != null)
             {
-                _effectsHandler.ApplyEffect(environment);
+                _effectsHandler.ApplyEffect(environment.EffectData);
             }
         }
     }
@@ -104,10 +104,10 @@ public class PlayerController : MonoBehaviour
     {
         if (col.tag == TagConstraintsConfig.AGRESSIVE_ENVIRONMENT_AREA_TAG)
         {
-            BasicAgresiveEnvironment environment = col.gameObject.GetComponent<BasicAgresiveEnvironment>();
+            BasicEffectZone environment = col.gameObject.GetComponent<BasicEffectZone>();
             if (environment != null)
             {
-                _effectsHandler.RemoveEffect(environment);
+                _effectsHandler.RemoveEffect(environment.EffectData);
             }
         }
     }
