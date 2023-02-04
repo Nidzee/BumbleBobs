@@ -6,7 +6,11 @@ TagManager:
   tags:
   - CollectibleItem
   - DestructibleUnit
+  - Bullet
+  - Enemy
   - Obstacle
+  - Environment
+  - AgressiveEnvironment
   layers:
   - Default
   - TransparentFX
@@ -14,12 +18,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - EnvironmentLayer
+  - EnemyLayer
+  - CollectiblesLayer
+  - BulletLayer
+  - PlayerLayer
+  - DestructibleLayer
   - 
   - 
   - 
