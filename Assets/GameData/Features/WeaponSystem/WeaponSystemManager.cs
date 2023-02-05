@@ -83,4 +83,5 @@ public class WeaponSystemManager : MonoBehaviour
 public enum WeaponType
 {
     AssaultRifle = 1,
+    RocketLauncher = 2,
 }

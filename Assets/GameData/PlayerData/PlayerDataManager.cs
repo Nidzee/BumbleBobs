@@ -1,20 +1,28 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.Events;
 using UnityEngine;
 
-public class PlayerDataManager
+public class PlayerDataManager : MonoBehaviour
 {
-    // Get reference to all player data here
-    PlayerSaveData _playerData;
+    public static PlayerDataManager Instance;
+    public PlayerSaveData PlayerData;
+
+    public UnityEvent OnDataChanged;
 
 
+
+    public void Awake()
+    {
+        Instance = this;
+        ReadPlayerData();
+    }
 
     // Read player data from backend or file
     public void ReadPlayerData()
     {
-        _playerData = new PlayerSaveData();
+        PlayerData = new PlayerSaveData();
     }
-
 
     // Save player data to backend or file
     public void SavePlayerData()
@@ -26,5 +34,7 @@ public class PlayerDataManager
 
 
 
-    // Get data to display tab
+
+
+
 }

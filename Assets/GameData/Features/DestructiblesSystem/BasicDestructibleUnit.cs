@@ -23,6 +23,12 @@ public class BasicDestructibleUnit : AliveUnit, ICanDropItem
 
     public override void TakeDamage(int damagePoints)
     {
+        if (Health <= 0)
+        {
+            return;
+        }
+
+
         Health -= damagePoints;
         if (Health <= 0)
         {

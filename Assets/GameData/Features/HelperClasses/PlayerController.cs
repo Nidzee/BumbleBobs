@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [Header("Handlers")]
     [SerializeField] PlayerEffectsHandler _effectsHandler;
     [SerializeField] PlayerItemCollectorHandler _itemCollectHandler;
+    [SerializeField] PlayerInteractionHandler _interactionHandler;
     
     [Header("Weapon")]
     [SerializeField] Weapon _weapon;
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
         _weapon.SetGunStats();
         _effectsHandler.Reset();
         _itemCollectHandler.Reset();
+        _interactionHandler.Reset();
     }
 
 
@@ -67,6 +69,17 @@ public class PlayerController : MonoBehaviour
                 _effectsHandler.ApplyEffect(environment.EffectData);
             }
         }
+
+
+        // Interactible zone logic
+        if (col.tag == TagConstraintsConfig.INTERACTIBLE_ZONE_TAG)
+        {
+            IInteractible data = col.gameObject.GetComponent<IInteractible>();
+            if (data != null)
+            {
+                _interactionHandler.RegisterInteractible(data);                
+            }
+        }
     }
 
     public void OnTriggerExit(Collider col)
@@ -77,6 +90,17 @@ public class PlayerController : MonoBehaviour
             if (environment != null)
             {
                 _effectsHandler.RemoveEffect(environment.EffectData);
+            }
+        }
+
+
+        // Interactible zone logic
+        if (col.tag == TagConstraintsConfig.INTERACTIBLE_ZONE_TAG)
+        {
+            IInteractible data = col.gameObject.GetComponent<IInteractible>();
+            if (data != null)
+            {
+                _interactionHandler.UnregisterInteractible(data);                
             }
         }
     }
@@ -126,5 +150,11 @@ public class PlayerController : MonoBehaviour
         {
             _weapon.StopShootingContinuesly();
         }
+
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            _interactionHandler.TryToInteract();
+        } 
     }
 }

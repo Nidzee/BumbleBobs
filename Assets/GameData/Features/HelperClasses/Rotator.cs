@@ -1,23 +1,32 @@
 using UnityEngine;
 
+public enum RotateType
+{
+    RotateArmoundY,
+    RotateArmoundZ
+}
+
 public class Rotator : MonoBehaviour
 {
     [SerializeField] float _rotationSpeed = 90f;
-    [SerializeField] Transform _rotateCustomObject;
-    Transform _rotateTarget;
+    [SerializeField] RotateType _rotateType = RotateType.RotateArmoundY;
+    Vector3 _rotateVector;
 
     void Start()
     {
-        _rotateTarget = this.transform;
-        if (_rotateCustomObject != null)
+        if (_rotateType == RotateType.RotateArmoundY)
         {
-            _rotateTarget = _rotateCustomObject;
+            _rotateVector = Vector3.up;
+        } 
+        else
+        {
+            _rotateVector = Vector3.forward;
         }
     }
 
     void Update()
     {
         // Rotates N degrees per second around
-        _rotateTarget.Rotate(0, 0, _rotationSpeed * Time.deltaTime);
+        transform.Rotate(_rotateVector * _rotationSpeed * Time.deltaTime);
     }
 }
