@@ -10,8 +10,8 @@ public class PlayerSaveData
     private PlayerSaveData_Currency _currencyData;
 
 
-    public PlayerSaveData_Health HealthData => _healthData;
-    public PlayerSaveData_Armour ArmourData => _armourData;
-    public PlayerSaveData_Weapon WeaponData => _weaponData;
-    public PlayerSaveData_Currency CurrencyData => _currencyData;
+    public PlayerSaveData_Armour ArmourData { get => _armourData; set => _armourData = value;}
+    public PlayerSaveData_Health HealthData { get => _healthData; set => _healthData = value;}
+    public PlayerSaveData_Weapon WeaponData { get => _weaponData; set => _weaponData = value;}
+    public PlayerSaveData_Currency CurrencyData { get => _currencyData; set => _currencyData = value;}
 }
