@@ -1,7 +1,70 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BasicEnemy : AliveUnit, IEnemy, ICanDropItem
 {
+    [SerializeField] NavMeshAgent _agent;
+    [SerializeField] LayerMask _whatIsPlayer;
+    [SerializeField] float _attackRange;
+    [SerializeField] float _attackCoolDown;
+
+    PlayerController _player;
+    bool _isPlayerReached;
+    float _currentAttackCoolDown;
+
+
+    public void Update()
+    {
+        // Reduce attack cooldown
+        if (_currentAttackCoolDown > 0)
+        {
+            _currentAttackCoolDown -= Time.deltaTime;
+        }
+
+
+        // Check if we reach player
+        _isPlayerReached = Physics.CheckSphere(transform.position, _attackRange, _whatIsPlayer);
+
+
+        if (_isPlayerReached)
+        {
+            Attack();
+        } 
+        else
+        {
+            ChasePlayer();
+        }
+    }
+
+    public void ChasePlayer()
+    {
+        Vector3 chasePoint = _player.transform.position;
+        chasePoint.y = transform.position.y;
+        _agent.SetDestination(chasePoint);
+    }
+
+    public void Attack()
+    {
+        _agent.SetDestination(transform.position);
+
+        Vector3 lookVector = _player.transform.position;
+        lookVector.y = transform.position.y;
+        transform.LookAt(lookVector);
+
+        if (_currentAttackCoolDown > 0)
+        {
+            return;
+        }
+        
+        Debug.Log("[Enemy] Attack player: " + _damagePoints);
+        _currentAttackCoolDown = _attackCoolDown;
+    }
+
+
+
+
+
+
     [Header("Enemy config")]
     [SerializeField] EnemyType _enemyType;
     [SerializeField] DamageType _damageType;
@@ -16,6 +79,8 @@ public class BasicEnemy : AliveUnit, IEnemy, ICanDropItem
     [Header("Death sound")]
     [SerializeField] AudioClip _deathSound;
 
+    float _damagePoints;
+    float _moveSpeed;
     public DamageType damageType { get => _damageType; }
     public LootBag lootBag { get => _lootBag; }
 
@@ -24,6 +89,7 @@ public class BasicEnemy : AliveUnit, IEnemy, ICanDropItem
     public void Start()
     {
         InitEnemyStats();
+        _player = GameSceneManager.Instance.Player;
     }
 
     public void InitEnemyStats()
@@ -41,11 +107,16 @@ public class BasicEnemy : AliveUnit, IEnemy, ICanDropItem
             return;
         }
 
+        _moveSpeed = stats.moveSpeed;
+        _damagePoints = stats.damagePoints;
+
         Health = stats.maxHealthPoints;
         Armour = stats.maxArmourPoints;
 
         _healthInfoBar.InitInfoBar(Health, Health);
         _armourInfoBar.InitInfoBar(Armour, Armour);
+
+        _agent.speed = _moveSpeed;
     }
 
 
@@ -65,8 +136,6 @@ public class BasicEnemy : AliveUnit, IEnemy, ICanDropItem
             Die();
         }
     }
-
-    public void Attack(){}
 
     public override void Die()
     {

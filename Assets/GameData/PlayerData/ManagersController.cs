@@ -25,6 +25,7 @@ public class ManagersController : MonoBehaviour
     {
         PlayerDataManager.Instance.InitManager(); // Read and shrink data
         ArmourDataManager.Instance.InitManager(); // Save copy and subscribe to events
+        HealthDataManager.Instance.InitManager();
         CurrencyDataManager.Instance.InitManager();
 
         // Temporary

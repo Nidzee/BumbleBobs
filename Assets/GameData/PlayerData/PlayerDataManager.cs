@@ -111,4 +111,25 @@ public class PlayerDataManager : MonoBehaviour
 
         OnDataChanged.Invoke();
     }
+
+    
+    public void TryToUpgradeHealth(int price)
+    {
+        if (PlayerData.CurrencyData.CoinsAmount < price)
+        {
+            Debug.Log("[Player Data Manager] Can not upgrade health. Not enough coins.");
+            return;
+        }
+
+
+        Debug.Log("[Player Data Manager] Upgrade health operation.");
+        PlayerData.CurrencyData.CoinsAmount -= price;
+        PlayerData.HealthData = HealthDataManager.Instance.GetUpgradedData();
+
+
+        // Save to backend
+
+
+        OnDataChanged.Invoke();
+    }
 }
