@@ -12,9 +12,4 @@ public class BasicButton : MonoBehaviour
     [HideInInspector] public UnityEvent OnClick = new UnityEvent();
 
     public Button BaseButton => _button;
-
-    void Awake()
-    {
-        _button.onClick.AddListener(() => { OnClick?.Invoke(); });
-    }
 }
