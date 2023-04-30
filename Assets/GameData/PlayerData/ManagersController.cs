@@ -24,7 +24,7 @@ public class ManagersController : MonoBehaviour
     {
         // Read player data
         PlayerDataManager.Instance.InitManager();
-        
+
 
         // Build cache
         // Save actual data
@@ -32,6 +32,13 @@ public class ManagersController : MonoBehaviour
         ArmourDataManager.Instance.InitManager();
 
         
+        // Build cache
+        // Save actual data
+        // Subscribe to events
+        HealthDataManager.Instance.InitManager();
+
+
+
         CurrencyDataManager.Instance.InitManager();
 
         
@@ -45,11 +52,6 @@ public class ManagersController : MonoBehaviour
 
 
         
-        // Build cache
-        // Save actual data
-        // Subscribe to events
-        HealthDataManager.Instance.InitManager();
-
         // Temporary
         UserInterfaceManager.Instance.InitManager();
     }

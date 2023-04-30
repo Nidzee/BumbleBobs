@@ -218,11 +218,13 @@ public class ArmourDataManager : MonoBehaviour
         int playerSteps = armourData.ArmourLevelStep;
 
 
+        // Check if saved-armour-level is in config
+        // If not -> shrink to fit in config
         if (!_armourLevelCache.ContainsKey(playerLevel))
         {
-            int topLevelNumber = _armourLevelCache.LastOrDefault().Key;
-
             Debug.Log("[Armour-Data-Manager] [1] Shrink the level number.");
+            
+            int topLevelNumber = _armourLevelCache.LastOrDefault().Key;
 
             if (playerLevel < 0)
             {
@@ -241,12 +243,16 @@ public class ArmourDataManager : MonoBehaviour
         }
 
 
+        // After level shrinkin -> we can take data by level from config
         // Gect player level config data
         var levelData = _armourLevelCache[playerLevel];
 
 
         int playerLevelConfigStepsAmount = levelData.GetStepsAmount();
         int topIndex = playerLevelConfigStepsAmount-1;
+
+
+        // Check if steps index is in bounds
         if (playerSteps < 0 || playerSteps > topIndex)
         {
             Debug.Log("[Armour-Data-Manager] [1] Shrink the step number.");

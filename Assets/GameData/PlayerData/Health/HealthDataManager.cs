@@ -22,6 +22,9 @@ public class HealthDataManager : MonoBehaviour
     // Copy of actual player data -> used to detect if data was updated -> to refresh UI
     PlayerSaveData_Health _healthSaveDataCopy;
 
+    // To track if we reach top of config -> to prevent next upgrade
+    PlayerSaveData_Health _topSaveConfig;
+
     // Manager events
     [HideInInspector] public UnityEvent OnDataChanged_Health;
 
@@ -55,6 +58,15 @@ public class HealthDataManager : MonoBehaviour
             config.BuildCache();
             _healthLevelCache[i] = config;
         }
+        
+
+        // Get top config
+        var topConfig = _healthLevelCache.LastOrDefault();
+        _topSaveConfig = new PlayerSaveData_Health()
+        {
+            HelathLevel = topConfig.Key,
+            HelathLevelStep = (topConfig.Value.GetStepsAmount()-1)
+        };
     }
 
     void OnPlayerGameDataChanged()
@@ -65,8 +77,8 @@ public class HealthDataManager : MonoBehaviour
 
         if (!isDataEqual)
         {
-            _healthSaveDataCopy = actualData.GetCopy();
             Debug.Log("[Health-Data-Manager] Data updated. OnDataChanged_Health() triggered.");
+            _healthSaveDataCopy = actualData.GetCopy();
             OnDataChanged_Health.Invoke();
         }
     }
@@ -75,6 +87,18 @@ public class HealthDataManager : MonoBehaviour
 
 
 
+
+    public bool IsTopConfig(PlayerSaveData_Health data)
+    {
+        return data.IsEqual(_topSaveConfig);
+    }
+
+    public HealthStepStats GetHealthStepStats(PlayerSaveData_Health data)
+    {
+        int level = data.HelathLevel;
+        var test = _healthLevelCache.TryGetValue(level, out var result);
+        return result.HealthStepStatsCollection[data.HelathLevelStep];
+    } 
 
 
 
@@ -88,6 +112,7 @@ public class HealthDataManager : MonoBehaviour
         int newLevel = 0;
         int newStep = 0;
 
+        Debug.Log("LEVEL: " + currentLevel);
 
         if (!_healthLevelCache.ContainsKey(currentLevel))
         {
@@ -156,5 +181,92 @@ public class HealthDataManager : MonoBehaviour
     {
         Debug.Log("[Health-Data-Manager] Try to upgrade health.");
         PlayerDataManager.Instance.TryToUpgradeHealth(GetUpgradePrice());
+    }
+
+
+
+
+
+
+
+
+    
+    public PlayerSaveData_Health ShrinkToConfigBounds(PlayerSaveData_Health healthData)
+    {
+        // Check if cache was build
+        if (_healthLevelCache == null || _healthLevelCache.Count <= 0)
+        {
+            Debug.LogError("[Health-Data-Manager] Cannot shrink data. No cache builded.");
+            return new PlayerSaveData_Health();
+        }
+
+
+
+        int playerLevel = healthData.HelathLevel;
+        int playerSteps = healthData.HelathLevelStep;
+
+
+        // Check if saved-health-level is in config
+        // If not -> shrink to fit in config
+        if (!_healthLevelCache.ContainsKey(playerLevel))
+        {
+            Debug.Log("[Health-Data-Manager] [1] Shrink the level number.");
+            
+            int topLevelNumber = _healthLevelCache.LastOrDefault().Key;
+
+            if (playerLevel < 0)
+            {
+                Debug.Log("[Health-Data-Manager] [1] Level lower than 0. Set as 0.");
+                playerLevel = 0;
+            }
+            else if (playerLevel > topLevelNumber)
+            {
+                Debug.Log("[Health-Data-Manager] [1] Level greater than top. Set as top.");
+                playerLevel = topLevelNumber;
+            } 
+            else
+            {
+                Debug.LogError("[Health-Data-Manager] Impossible bug. Level number must be inside bounds.");
+            }
+        }
+
+
+        // After level shrinkin -> we can take data by level from config
+        // Gect player level config data
+        var levelData = _healthLevelCache[playerLevel];
+
+
+        int playerLevelConfigStepsAmount = levelData.GetStepsAmount();
+        int topIndex = playerLevelConfigStepsAmount-1;
+
+
+        // Check if steps index is in bounds
+        if (playerSteps < 0 || playerSteps > topIndex)
+        {
+            Debug.Log("[Health-Data-Manager] [1] Shrink the step number.");
+
+            if (playerSteps < 0)
+            {
+                Debug.Log("[Health-Data-Manager] [1] Step lower than 0. Set as 0.");
+                playerSteps = 0;
+            }
+            else if (playerSteps > topIndex)
+            {
+                Debug.Log("[Health-Data-Manager] [1] Step greater than top. Set as top.");
+                playerSteps = topIndex;
+            } 
+            else
+            {
+                Debug.LogError("[Health-Data-Manager] Impossible bug. Step number must be inside bounds.");
+            }
+        }
+
+
+        // Return shrink data
+        return new PlayerSaveData_Health()
+        {
+            HelathLevel = playerLevel,
+            HelathLevelStep = playerSteps,
+        };
     }
 }

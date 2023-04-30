@@ -81,7 +81,6 @@ public class UniversalButton : BasicButton
         var targetMat = data.Font_Bold;
         _buttonLabel.fontSharedMaterial = targetMat;
 
-        Debug.Log("MATERIAL: " + _buttonLabel.fontSharedMaterial.name);
 
         // Apply button image
         _buttonImage.sprite = data.ButtonSprite;

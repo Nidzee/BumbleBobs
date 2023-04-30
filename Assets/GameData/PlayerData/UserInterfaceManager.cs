@@ -6,17 +6,21 @@ public class UserInterfaceManager : MonoBehaviour
 {
     public static UserInterfaceManager Instance;
 
-    [SerializeField] ArmourTab _armourTab;
-    [SerializeField] CurrencyPanel _currencyPanel;
-
     private void Awake()
     {
         Instance = this;
     }
 
+
+
+    [SerializeField] ArmourTab _armourTab;
+    [SerializeField] HealthTab _healthTab;
+    [SerializeField] CurrencyPanel _currencyPanel;
+
     public void InitManager()
     {
         _armourTab.InitTab();
+        _healthTab.InitTab();
         _currencyPanel.InitPanel();
     }
 }

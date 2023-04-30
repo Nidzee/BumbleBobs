@@ -32,8 +32,8 @@ public class PlayerDataManager : MonoBehaviour
 
         PlayerData.ArmourData = new PlayerSaveData_Armour() {ArmourLevel = 1, ArmourLevelStep = 6} ;
         PlayerData.CurrencyData = new PlayerSaveData_Currency() {CoinsAmount = 350, CrystalsAmount = 10};
+        PlayerData.HealthData = new PlayerSaveData_Health() { HelathLevel = 100, HelathLevelStep = 100};
 
-        PlayerData.HealthData = new PlayerSaveData_Health();
         PlayerData.WeaponData = new PlayerSaveData_Weapon();
     }
 
@@ -131,7 +131,30 @@ public class PlayerDataManager : MonoBehaviour
 
     public void TryToUpgradeHealth(int price)
     {
-       
+       if (PlayerData.CurrencyData.CoinsAmount < price)
+        {
+            Debug.Log("[Player Data Manager] Can not upgrade health. Not enough coins.");
+            return;
+        }
+
+        var upgradedData = HealthDataManager.Instance.GetUpgradedData();
+        if (upgradedData == null)
+        {
+            Debug.LogError("[Player Data Manager] Error Health Upgrading. Aborted.");
+            return;
+        }
+
+
+        Debug.Log("[Player Data Manager] Upgrade health operation.");
+        PlayerData.CurrencyData.CoinsAmount -= price;
+        PlayerData.HealthData = upgradedData;
+
+
+        // Save to backend
+        SavePlayerData();
+
+
+        OnDataChanged.Invoke();
     }
 
 
@@ -147,10 +170,11 @@ public class PlayerDataManager : MonoBehaviour
 
     public void ShrinkPlayerData()
     {
-        ShrinkTheData();
+        ShrinkTheData_Armour();
+        ShrinkTheData_Health();
     }
 
-    public void ShrinkTheData()
+    public void ShrinkTheData_Armour()
     {
         bool isShrinked = false;
         
@@ -168,6 +192,30 @@ public class PlayerDataManager : MonoBehaviour
         if (isShrinked)
         {
             Debug.Log("[Player-Data-Manager] Data was shrinked on start.");
+            OnDataChanged.Invoke();
+            SavePlayerData();
+        }
+    }
+    
+    public void ShrinkTheData_Health()
+    {
+        bool isShrinked = false;
+        
+        // Try to shrink health data
+        PlayerSaveData_Health savedData = PlayerData.HealthData.GetCopy();
+        PlayerSaveData_Health shrinkedData = HealthDataManager.Instance.ShrinkToConfigBounds(savedData);
+        if (!savedData.IsEqual(shrinkedData))
+        {
+            PlayerData.HealthData = shrinkedData;
+            isShrinked = true;
+        }
+
+
+        // Save to backend shrinked version
+        if (isShrinked)
+        {
+            Debug.Log("[Player-Data-Manager] Data was shrinked on start.");
+            OnDataChanged.Invoke();
             SavePlayerData();
         }
     }
