@@ -8,7 +8,7 @@ public class CurrencyCoinsWidget : MonoBehaviour
     [SerializeField] Text _coinsLabel;
 
 
-    public void SetCoinsAmount()
+    public void SetCurrencyDisplay()
     {
         int coinsAmount = PlayerDataManager.Instance.PlayerData.CurrencyData.CoinsAmount;
         _coinsLabel.text = coinsAmount.ToString();

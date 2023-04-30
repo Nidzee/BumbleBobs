@@ -1,52 +1,86 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
+using UnityEngine;
+using TMPro;
 
 public class ArmourDataWidget : MonoBehaviour
 {
-    [SerializeField] Text _levelLabel;
-    [SerializeField] Text _stepLabel;
-    [SerializeField] Text _priceLabel;
+    [SerializeField] TMP_Text _levelLabel;
+    [SerializeField] TMP_Text _stepLabel;
+    [SerializeField] TMP_Text _valueLabel;
 
-    [SerializeField] Button _upgradeButton;
-    public Button UpgradeButton => _upgradeButton;
+    [SerializeField] UniversalButton _upgradeButton;
 
 
-    public void Init()
+    public void InitWidget()
     {
-        // Set only level and step
-        PlayerSaveData_Armour armourData = PlayerDataManager.Instance.PlayerData.ArmourData;
-        _levelLabel.text = armourData.ArmourLevel.ToString();
-        _stepLabel.text = armourData.ArmourLevelStep.ToString();
+        // Set data
+        RefreshWidget();
+
+        // Connect signals
+        ConnectSignals();
     }
 
-    public void RefreshPurchaseButton()
+    void RefreshWidget()
     {
-        // Check if top config reached
+        RefreshActualArmourData();
+        RefreshPurchaseButton();
+    }
+
+    void ConnectSignals()
+    {
+        // If upgrade pressed -> try to upgrade armour
+        _upgradeButton.OnClick.AddListener(ArmourDataManager.Instance.TryToUpgradeArmour);
+
+        // If currency changed -> refresh only currency button
+        CurrencyDataManager.Instance.OnDataChanged_Currency.AddListener(RefreshPurchaseButton);
+
+        // If armour data was changed -> refresh data and purchase button
+        ArmourDataManager.Instance.OnDataChanged_Armour.AddListener(RefreshWidget);
+    }
+
+
+
+
+    void RefreshActualArmourData()
+    {
+        // Get actual data
+        PlayerSaveData_Armour armourData = PlayerDataManager.Instance.PlayerData.ArmourData;
+        
+        // Set visuals
+        _levelLabel.text = armourData.ArmourLevel.ToString();
+        _stepLabel.text = armourData.ArmourLevelStep.ToString();
+        _valueLabel.text = ArmourDataManager.Instance.GetArmourStepStats(armourData).ArmourValue.ToString();
+    }
+
+    void RefreshPurchaseButton()
+    {
+        // Check if top config reached -> disable button to prevent trying to upgrade more than config
         PlayerSaveData_Armour armourData = PlayerDataManager.Instance.PlayerData.ArmourData;
         if (ArmourDataManager.Instance.IsTopConfig(armourData))
         {
-            _upgradeButton.enabled = false;
-            _priceLabel.text = "TOP REACHED";
+            _upgradeButton.SetLabel("Top reached!");
+            _upgradeButton.BaseButton.enabled = false;
             return;
         }
 
 
 
-        int coinsAmount = PlayerDataManager.Instance.PlayerData.CurrencyData.CoinsAmount;
+        // Set buton upgrade price
         int upgradePrice = ArmourDataManager.Instance.GetUpgradePrice();
+        _upgradeButton.SetButtonPrice(upgradePrice);
 
 
+        // Check if button can be pressed
+        int coinsAmount = PlayerDataManager.Instance.PlayerData.CurrencyData.CoinsAmount;
         if (coinsAmount >= upgradePrice)
         {
-            _upgradeButton.enabled = true;
-            _priceLabel.text = upgradePrice + "$";
+            _upgradeButton.BaseButton.enabled = true;
         }
         else
         {
-            _upgradeButton.enabled = false;
-            _priceLabel.text = "NOT ENOUGH";
+            _upgradeButton.BaseButton.enabled = false;
         }
     }
 }

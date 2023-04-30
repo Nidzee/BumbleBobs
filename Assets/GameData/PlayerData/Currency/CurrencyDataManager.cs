@@ -4,16 +4,33 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
+
+public enum CurrencyType
+{
+    None = 0,
+    Coins = 1,
+    Crystals = 2,
+}
+
+
 public class CurrencyDataManager : MonoBehaviour
 {
     public static CurrencyDataManager Instance;
-    PlayerSaveData_Currency _currencyDataCopy;
-    [HideInInspector] public UnityEvent OnDataChanged_Currency;
-
+    
     void Awake()
     {
         Instance = this;
     }
+
+
+
+    PlayerSaveData_Currency _currencyDataCopy;
+
+
+    // Manager event
+    [HideInInspector] public UnityEvent OnDataChanged_Currency;
+
+
 
     public void InitManager()
     {
@@ -35,13 +52,17 @@ public class CurrencyDataManager : MonoBehaviour
         }
     }
 
-    public void TryToAddCurrency(int addAmount)
+
+
+
+
+    public void TryToAddCurrency(CurrencyType type, int addAmount)
     {
-        PlayerDataManager.Instance.TryToAddCoins(addAmount);
+        PlayerDataManager.Instance.TryToAddCurrency(type, addAmount);
     }
     
-    public void TryToRemoveCurrency(int removeAmount)
+    public void TryToRemoveCurrency(CurrencyType type, int removeAmount)
     {
-        PlayerDataManager.Instance.TryToRemoveCoins(removeAmount);
+        PlayerDataManager.Instance.TryToRemoveCurrency(type, removeAmount);
     }
 }

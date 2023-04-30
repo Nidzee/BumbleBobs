@@ -13,19 +13,9 @@ public class HealthStepStats
 public class HealthLevelDataConfig
 {
     public List<HealthStepStats> HealthStepStatsCollection;
-    Dictionary<int, int> _healthStepStatsCache;
+    Dictionary<int, HealthStepStats> _healthStepStatsCache;
     int _stepsAmount;
 
-
-    public bool IsValid()
-    {
-        if (HealthStepStatsCollection == null || HealthStepStatsCollection.Count <= 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
 
     public void BuildCache()
     {
@@ -34,11 +24,11 @@ public class HealthLevelDataConfig
 
 
         // Build cache for steps->values
-        _healthStepStatsCache = new Dictionary<int, int>();
+        _healthStepStatsCache = new Dictionary<int, HealthStepStats>();
         for (int i = 0; i < _healthStepStatsCache.Count; i++)
         {
             HealthStepStats item = HealthStepStatsCollection[i];
-            _healthStepStatsCache[i] = item.HealthValue;
+            _healthStepStatsCache[i] = item;
         }
     }
 

@@ -6,7 +6,6 @@ public class ManagersController : MonoBehaviour
 {
     public static ManagersController Instance;
 
-
     public void Awake()
     {
         Instance = this;
@@ -23,10 +22,33 @@ public class ManagersController : MonoBehaviour
 
     void InitManagers()
     {
-        PlayerDataManager.Instance.InitManager(); // Read and shrink data
-        ArmourDataManager.Instance.InitManager(); // Save copy and subscribe to events
-        HealthDataManager.Instance.InitManager();
+        // Read player data
+        PlayerDataManager.Instance.InitManager();
+        
+
+        // Build cache
+        // Save actual data
+        // Subscribe to events
+        ArmourDataManager.Instance.InitManager();
+
+        
         CurrencyDataManager.Instance.InitManager();
+
+        
+        PlayerDataManager.Instance.ShrinkPlayerData();
+
+        
+
+
+
+
+
+
+        
+        // Build cache
+        // Save actual data
+        // Subscribe to events
+        HealthDataManager.Instance.InitManager();
 
         // Temporary
         UserInterfaceManager.Instance.InitManager();

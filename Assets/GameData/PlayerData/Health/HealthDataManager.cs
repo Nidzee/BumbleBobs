@@ -9,25 +9,34 @@ public class HealthDataManager : MonoBehaviour
     // Static reference
     public static HealthDataManager Instance;
     
+    void Awake()
+    {
+        Instance = this;
+    }
+
 
     // Manager data
     [SerializeField] HealthDataConfig _healthDataConfig;
-    PlayerSaveData_Health _healthSaveDataCopy;
     Dictionary<int, HealthLevelDataConfig> _healthLevelCache;
-    PlayerSaveData_Health _topSaveConfig;
+
+    // Copy of actual player data -> used to detect if data was updated -> to refresh UI
+    PlayerSaveData_Health _healthSaveDataCopy;
 
     // Manager events
     [HideInInspector] public UnityEvent OnDataChanged_Health;
 
 
-    void Awake()
+
+    public void InitManager()
     {
-        Instance = this;
         BuildManagerCache();
+        _healthSaveDataCopy = PlayerDataManager.Instance.PlayerData.HealthData.GetCopy();
+        PlayerDataManager.Instance.OnDataChanged.AddListener(OnPlayerGameDataChanged);
     }
 
     void BuildManagerCache()
     {
+        // Skip if no data provided
         if (_healthDataConfig == null ||  _healthDataConfig.HealthLevelsConfigCollection == null ||  _healthDataConfig.HealthLevelsConfigCollection.Count <= 0)
         {
             Debug.LogError("[Health-Data-Manager] Data is not provided.");
@@ -43,112 +52,9 @@ public class HealthDataManager : MonoBehaviour
         {
             // Check if config is valid
             var config = _healthDataConfig.HealthLevelsConfigCollection[i];
-            if (!config.IsValid())
-            {
-                Debug.LogError("[Health-Data-Manager] Config is invalid.");
-                i--;
-                continue;
-            }
-
             config.BuildCache();
             _healthLevelCache[i] = config;
         }
-
-        var topConfig = _healthLevelCache.LastOrDefault();
-        _topSaveConfig = new PlayerSaveData_Health()
-        {
-            HelathLevel = topConfig.Key,
-            HelathLevelStep = (topConfig.Value.GetStepsAmount()-1)
-        };
-    }
-
-    public PlayerSaveData_Health ShrinkToConfigBounds(PlayerSaveData_Health healthData)
-    {
-        // Check if cache was build
-        if (_healthLevelCache == null || _healthLevelCache.Count <= 0)
-        {
-            Debug.LogError("[Health-Data-Manager] Cannot shrink data. No cache builded.");
-            return new PlayerSaveData_Health();
-        }
-
-
-
-        int playerLevel = healthData.HelathLevel;
-        int playerSteps = healthData.HelathLevelStep;
-
-
-        if (!_healthLevelCache.ContainsKey(playerLevel))
-        {
-            int topLevelNumber = _healthLevelCache.LastOrDefault().Key;
-
-            Debug.Log("[Health-Data-Manager] [1] Shrink the level number.");
-
-            if (playerLevel < 0)
-            {
-                Debug.Log("[Health-Data-Manager] [1] Level lower than 0. Set as 0.");
-                playerLevel = 0;
-            }
-            else if (playerLevel > topLevelNumber)
-            {
-                Debug.Log("[Health-Data-Manager] [1] Level greater than top. Set as top.");
-                playerLevel = topLevelNumber;
-            } 
-            else
-            {
-                Debug.LogError("[Health-Data-Manager] Impossible bug. Level number must be inside bounds.");
-            }
-        }
-
-
-        // Gect player level config data
-        var levelData = _healthLevelCache[playerLevel];
-
-
-        int playerLevelConfigStepsAmount = levelData.GetStepsAmount();
-        int topIndex = playerLevelConfigStepsAmount-1;
-        if (playerSteps < 0 || playerSteps > topIndex)
-        {
-            Debug.Log("[Health-Data-Manager] [1] Shrink the step number.");
-
-            if (playerSteps < 0)
-            {
-                Debug.Log("[Health-Data-Manager] [1] Step lower than 0. Set as 0.");
-                playerSteps = 0;
-            }
-            else if (playerSteps > topIndex)
-            {
-                Debug.Log("[Health-Data-Manager] [1] Step greater than top. Set as top.");
-                playerSteps = topIndex;
-            } 
-            else
-            {
-                Debug.LogError("[Health-Data-Manager] Impossible bug. Step number must be inside bounds.");
-            }
-        }
-
-
-        // Return shrink data
-        return new PlayerSaveData_Health()
-        {
-            HelathLevel = playerLevel,
-            HelathLevelStep = playerSteps,
-        };
-    }
-
-
-
-
-
-
-
-
-
-
-
-    public void InitManager()
-    {
-        _healthSaveDataCopy = PlayerDataManager.Instance.PlayerData.HealthData.GetCopy();
-        PlayerDataManager.Instance.OnDataChanged.AddListener(OnPlayerGameDataChanged);
     }
 
     void OnPlayerGameDataChanged()
@@ -174,11 +80,6 @@ public class HealthDataManager : MonoBehaviour
 
 
 
-
-    public bool IsTopConfig(PlayerSaveData_Health data)
-    {
-        return data.IsEqual(_topSaveConfig);
-    }
 
     public PlayerSaveData_Health GetUpgradedData()
     {
